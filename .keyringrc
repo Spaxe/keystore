@@ -1,0 +1,7 @@
+{
+  "keyring": "~/Dropbox/keyring",
+  "folders": [
+    "~/.ssh"
+  ],
+  "verbose": true
+}
