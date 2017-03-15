@@ -1,4 +1,4 @@
-# Keyring - keeps your private keys in one place.
+# Keyring - keeps your keys in one place.
 
 ## THIS IS AN EXPERIMENT. DO NOT USE IN PRODUCTION.
 
