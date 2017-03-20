@@ -10,9 +10,21 @@ Python 3.4+.
 
     pip install -r requirements.txt
 
+Setup your Keystore file in `~/.keystorerc`:
+
+    {
+      "keystore": "~/Dropbox/Keystore",
+      "folders": [
+        "~/.ssh",
+      ],
+      "verbose": true
+    }
+
 ### Example usage:
 
 **Saving keys:**
+
+    $ keystore-save
 
     Inspecting ~/.ssh:
     Adding /Users/spaxe/.ssh/id_rsa ...
@@ -29,6 +41,8 @@ Python 3.4+.
     [...]
 
 **Loading keys:**
+
+    $ keystore-load
 
     Located encrypted keystore at ~/Dropbox/keystore:
     Please enter the passphrase:
