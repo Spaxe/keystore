@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
-'''
-  keystore - compress and encrypt your private keys
+'''keystore - compress and encrypt your private keys
   author: Xavier Ho <contact@xavierho.com>
 
-  License: MIT
+Usage:
+  save.py [options] --keystorerc <keystorerc>
+  save.py [options] <keystore> <folders>...
+  save.py (-h | --help)
+  save.py --version
+
+Options:
+  --keystorerc <keystorerc>   Specify .keystorerc file path.
+  -v --verbose                Print out extra information.
+  -h --help                   Show this screen.
+  --version                   Show version.
 '''
 import io
 import os
@@ -13,25 +22,37 @@ import gzip
 import base64
 import pathlib
 import getpass
-import rncryptor
 import traceback
+
+import rncryptor
+from docopt import docopt
+
 import keystorerc
 
-def save():
+def save(keystorerc=None, keystore=None, folders=[], verbose=False):
   '''create a keystore, compress and encrypt to file'''
 
-  config = keystorerc.load()
-  if not config:
-    print('No configuration found.', file=sys.stderr)
-    sys.exit(-1)
+  config = None
+  if keystorerc:
+    config = keystorerc.read(keystorerc)
+    if not config:
+      print('No configuration found.', file=sys.stderr)
+      sys.exit(-1)
+  elif keystore and len(folders) > 0:
+    config = {
+      'keystore': keystore,
+      'folders': folders
+    }
 
-  verbose = False
   if 'verbose' in config and config['verbose']:
     verbose = True
 
   keystore_path = None
   if 'keystore' not in config:
     print('.keystorerc needs to specify a keystore file path.', file=sys.stderr)
+    sys.exit(-1)
+  elif pathlib.Path(os.path.expanduser(config['keystore'])).is_dir():
+    print('keystore cannot be a folder: {}'.format(config['keystore']), file=sys.stderr)
     sys.exit(-1)
   elif not pathlib.Path(os.path.expanduser(config['keystore'])).is_file():
     # If keystore file does not exist already, attempt to create one
@@ -50,7 +71,12 @@ def save():
     for path in config['folders']:
 
       if verbose: print('Inspecting {}:'.format(path))
-      for dirpath, dirnames, filenames in os.walk(os.path.expanduser(path)):
+
+      expanded_path = os.path.expanduser(path)
+      if not os.path.exists(path):
+        print('File or folder does not exist: {}'.format(path), file=sys.stderr)
+        sys.exit(-1)
+      for dirpath, dirnames, filenames in os.walk(expanded_path):
         for name in filenames:
           fullpath = os.path.join(dirpath, name)
           if verbose: print('Adding {} ...'.format(fullpath))
@@ -87,8 +113,10 @@ def save():
     writer_friendly_keystore = base64.encodebytes(encrypted_keystore).decode('utf-8')
 
     # save encrypted keystore to file
+    keystore_path = os.path.expanduser(keystore_path)
+    if verbose: print('Writing to keystore file {}'.format(keystore_path))
 
-    with open(os.path.expanduser(keystore_path), 'w') as keystore_file:
+    with open(keystore_path, 'w') as keystore_file:
       keystore_file.write(writer_friendly_keystore)
 
     if verbose: print('Keyring successfully created: ')
@@ -109,4 +137,16 @@ def save():
     sys.exit(-1)
 
 if __name__ == '__main__':
-  save()
+  arguments = docopt(__doc__, version='0.1.0')
+
+  if arguments['--keystorerc']:
+    save(
+      keystorerc=arguments['--keystorerc'],
+      verbose=arguments['--verbose']
+    )
+  elif arguments['<keystore>'] and arguments['<folders>']:
+    save(
+      keystore=arguments['<keystore>'],
+      folders=arguments['<folders>'],
+      verbose=arguments['--verbose']
+    )

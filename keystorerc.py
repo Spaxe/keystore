@@ -9,10 +9,12 @@ import os
 import sys
 import json
 
-def load():
+def read(filepath):
   path = None
 
   try:
+    if os.path.isfile(os.path.expanuser(filepath)):
+      path = os.path.expanuser(filepath)
     if os.path.isfile('./.keystorerc'):
       path = './.keystorerc'
     elif os.path.isfile('~/.keystorerc'):

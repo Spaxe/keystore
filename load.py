@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
-'''
-  keystore - compress and encrypt your private keys
+'''keystore - compress and encrypt your private keys
   author: Xavier Ho <contact@xavierho.com>
 
-  License: MIT
+Usage:
+  save.py [options] [--copy-to <folder>] --keystorerc <keystorerc>
+  save.py [options] [--copy-to <folder>] <keystore>
+  save.py (-h | --help)
+  save.py --version
+
+Options:
+  --keystorerc <keystorerc>   Specify .keystorerc file path.
+  --copy-to <folder>          If specified, writes files to one folder.
+  -v --verbose                Print out extra information.
+  -h --help                   Show this screen.
+  --version                   Show version.
 '''
 import io
 import os
@@ -13,18 +23,27 @@ import gzip
 import base64
 import pathlib
 import getpass
+
 import rncryptor
+from docopt import docopt
+
 import keystorerc
 
-def load():
+def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   '''decrypt and write out a keystore'''
 
-  config = keystorerc.load()
-  if not config:
-    print('No configuration found.', file=sys.stderr)
-    sys.exit(-1)
+  config = None
+  if keystorerc:
+    config = keystorerc.read(keystorerc)
+    if not config:
+      print('No configuration found.', file=sys.stderr)
+      sys.exit(-1)
+  elif keystore:
+    config = {
+      'keystore': keystore,
+      'folders': []
+    }
 
-  verbose = False
   if 'verbose' in config and config['verbose']:
     verbose = True
 
@@ -39,6 +58,10 @@ def load():
   else:
     keystore_path = config['keystore']
 
+  if copyto and not os.path.isdir(copyto):
+    print('The folder to copy to does not exist: {}'.format(copyto), file=sys.stderr)
+    sys.exit(-1)
+
   # load and attempt to unencrypt keystore by passphrase
 
   encrypted_keystore = None
@@ -47,7 +70,7 @@ def load():
       reader_friendly_keystore = keystore_file.read()
       encrypted_keystore = base64.decodebytes(reader_friendly_keystore.encode('utf-8'))
 
-    if verbose: print('Located encrypted keystore at {}:'.format(keystore_path))
+    if verbose: print('Located encrypted keystore at {}.'.format(keystore_path))
     # if verbose: print(reader_friendly_keystore)
 
     cryptor = rncryptor.RNCryptor()
@@ -98,11 +121,14 @@ def load():
 
   count = 0
   for filepath, key in keystore.items():
-    if os.path.isfile(os.path.expanduser(filepath)):
+    expanded_filepath = os.path.expanduser(filepath)
+    if copyto:
+      expanded_filepath = os.path.join(copyto, os.path.basename(filepath))
+    if os.path.isfile(expanded_filepath):
       confirmed = False
       overwrite = False
       while not confirmed:
-        overwrite = input('File {} exists. Are you sure you want to overwrite? (y)/n: '.format(filepath))
+        overwrite = input('File {} exists. Are you sure you want to overwrite? (y)/n: '.format(expanded_filepath))
         if overwrite == '' or overwrite == 'y' or overwrite == 'Y':
           overwrite = True
           confirmed = True
@@ -115,16 +141,30 @@ def load():
         continue
 
     # key ready to be created
-    if verbose: print('Writing key to {} ...'.format(filepath))
+    if verbose: print('Writing key to {} ...'.format(expanded_filepath))
     try:
-      with open(filepath, 'w') as keyfile:
+      with open(expanded_filepath, 'w') as keyfile:
         keyfile.write(key)
       count += 1
     except OSError as err:
       print('File system threw an error: {}'.format(err), file=sys.stderr)
-      print('Skipping {}'.format(filepath))
+      print('Skipping {}'.format(expanded_filepath))
 
   if verbose: print('Keyring loaded. Restored {} keys.'.format(count))
 
 if __name__ == '__main__':
-  load()
+  arguments = docopt(__doc__, version='0.1.0')
+  print(arguments)
+
+  if arguments['<keystore>']:
+    load(
+      keystore=arguments['<keystore>'],
+      copyto=arguments['--copy-to'],
+      verbose=arguments['--verbose']
+    )
+  elif arguments['--keystorerc']:
+    load(
+      keystorerc=arguments['--keystorerc'],
+      copyto=arguments['--copy-to'],
+      verbose=arguments['--verbose']
+    )
