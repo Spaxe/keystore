@@ -27,7 +27,7 @@ import getpass
 import rncryptor
 from docopt import docopt
 
-import config_reader
+from keystore import config_reader
 
 def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   '''decrypt and write out a keystore'''

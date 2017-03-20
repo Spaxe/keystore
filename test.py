@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-import save
-import load
-import config_reader
+from keystore import save, load, config_reader
 
 def test_keystore():
   compare_dir = './test/compare'
