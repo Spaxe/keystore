@@ -1,12 +1,16 @@
-# Keystore - keeps your keys in one place.
+Keystore - keeps your keys in one place.
+----------------------------------------
 
-## THIS IS AN EXPERIMENT. DO NOT USE IN PRODUCTION.
+THIS IS AN EXPERIMENT. DO NOT USE IN PRODUCTION.
+----------------------------------------
 
-### Prerequisites
+Prerequisites
+=============
 
 Python 3.4+.
 
-### Install:
+Install
+=======
 
     pip install -r requirements.txt
 
@@ -20,7 +24,8 @@ Setup your Keystore file in `~/.keystorerc`:
       "verbose": true
     }
 
-### Example usage:
+Example usage
+=============
 
 **Saving keys:**
 
@@ -59,7 +64,8 @@ Setup your Keystore file in `~/.keystorerc`:
 
     python test.py
 
-# License
+License
+=======
 © Xavier Ho <contact@xavierho.com>
 
 License under MIT License.
