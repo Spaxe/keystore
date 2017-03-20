@@ -2,6 +2,14 @@
 
 ## THIS IS AN EXPERIMENT. DO NOT USE IN PRODUCTION.
 
+### Prerequisites
+
+Python 3.4+.
+
+### Install:
+
+    pip install -r requirements.txt
+
 ### Example usage:
 
 **Saving keys:**
@@ -32,6 +40,10 @@
     File /Users/spaxe/.ssh/known_hosts exists. Are you sure you want to overwrite? (y)/n:
     Writing key to /Users/spaxe/.ssh/known_hosts ...
     Keyring loaded. Restored 3 keys.
+
+**Running tests:**
+
+    python test.py
 
 # License
 © Xavier Ho <contact@xavierho.com>
