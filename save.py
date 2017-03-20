@@ -27,14 +27,14 @@ import traceback
 import rncryptor
 from docopt import docopt
 
-import keystorerc
+import config_reader
 
 def save(keystorerc=None, keystore=None, folders=[], verbose=False):
   '''create a keystore, compress and encrypt to file'''
 
   config = None
   if keystorerc:
-    config = keystorerc.read(keystorerc)
+    config = config_reader.read(keystorerc)
     if not config:
       print('No configuration found.', file=sys.stderr)
       sys.exit(-1)
@@ -51,18 +51,18 @@ def save(keystorerc=None, keystore=None, folders=[], verbose=False):
   if 'keystore' not in config:
     print('.keystorerc needs to specify a keystore file path.', file=sys.stderr)
     sys.exit(-1)
-  elif pathlib.Path(os.path.expanduser(config['keystore'])).is_dir():
+
+  keystore_path = os.path.expanduser(config['keystore'])
+  if pathlib.Path(keystore_path).is_dir():
     print('keystore cannot be a folder: {}'.format(config['keystore']), file=sys.stderr)
     sys.exit(-1)
-  elif not pathlib.Path(os.path.expanduser(config['keystore'])).is_file():
+  elif not pathlib.Path(keystore_path).is_file():
     # If keystore file does not exist already, attempt to create one
     try:
-      pathlib.Path(os.path.expanduser(config['keystore'])).touch()
+      pathlib.Path(keystore_path).touch()
     except OSError as err:
       print('keystore cannot be accessed: {}\n{}'.format(config['keystore'], err), file=sys.stderr)
       sys.exit(-1)
-  else:
-    keystore_path = config['keystore']
 
   # iterate through keys and add them here
 

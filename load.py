@@ -27,14 +27,14 @@ import getpass
 import rncryptor
 from docopt import docopt
 
-import keystorerc
+import config_reader
 
 def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   '''decrypt and write out a keystore'''
 
   config = None
   if keystorerc:
-    config = keystorerc.read(keystorerc)
+    config = config_reader.read(keystorerc)
     if not config:
       print('No configuration found.', file=sys.stderr)
       sys.exit(-1)
