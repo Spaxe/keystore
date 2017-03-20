@@ -1,4 +1,4 @@
-# Keyring - keeps your keys in one place.
+# Keystore - keeps your keys in one place.
 
 ## THIS IS AN EXPERIMENT. DO NOT USE IN PRODUCTION.
 
@@ -10,9 +10,9 @@
     Adding /Users/spaxe/.ssh/id_rsa ...
     Adding /Users/spaxe/.ssh/id_rsa.pub ...
     Adding /Users/spaxe/.ssh/known_hosts ...
-    Added 3 key(s) to keyring.
+    Added 3 key(s) to keystore.
 
-    This passphrase is used to decrypt your keyring. Please remember it.
+    This passphrase is used to decrypt your keystore. Please remember it.
     Please enter a passphrase:
     Please verify your passphrase:
     Passphrase accepted. Encrypting ...
@@ -22,7 +22,7 @@
 
 **Loading keys:**
 
-    Located encrypted keyring at ~/Dropbox/keyring:
+    Located encrypted keystore at ~/Dropbox/keystore:
     Please enter the passphrase:
     Keyring decrypted successfully.
     File /Users/spaxe/.ssh/id_rsa exists. Are you sure you want to overwrite? (y)/n:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-  keyring - compress and encrypt your private keys
+  keystore - compress and encrypt your private keys
   author: Xavier Ho <contact@xavierho.com>
 
   License: MIT
@@ -14,12 +14,12 @@ import base64
 import pathlib
 import getpass
 import rncryptor
-import keyringrc
+import keystorerc
 
 def load():
-  '''decrypt and write out a keyring'''
+  '''decrypt and write out a keystore'''
 
-  config = keyringrc.load()
+  config = keystorerc.load()
   if not config:
     print('No configuration found.', file=sys.stderr)
     sys.exit(-1)
@@ -28,35 +28,35 @@ def load():
   if 'verbose' in config and config['verbose']:
     verbose = True
 
-  keyring_path = None
-  if 'keyring' not in config:
-    print('.keyringrc needs to specify a keyring file path.', file=sys.stderr)
+  keystore_path = None
+  if 'keystore' not in config:
+    print('.keystorerc needs to specify a keystore file path.', file=sys.stderr)
     sys.exit(-1)
-  elif not pathlib.Path(os.path.expanduser(config['keyring'])).is_file():
-    # If keyring file does not exist, nothing to load and exits
-    print('keyring does not exist: {}'.format(config['keyring']), file=sys.stderr)
+  elif not pathlib.Path(os.path.expanduser(config['keystore'])).is_file():
+    # If keystore file does not exist, nothing to load and exits
+    print('keystore does not exist: {}'.format(config['keystore']), file=sys.stderr)
     sys.exit(-1)
   else:
-    keyring_path = config['keyring']
+    keystore_path = config['keystore']
 
-  # load and attempt to unencrypt keyring by passphrase
+  # load and attempt to unencrypt keystore by passphrase
 
-  encrypted_keyring = None
+  encrypted_keystore = None
   try:
-    with open(os.path.expanduser(keyring_path), 'r') as keyring_file:
-      reader_friendly_keyring = keyring_file.read()
-      encrypted_keyring = base64.decodebytes(reader_friendly_keyring.encode('utf-8'))
+    with open(os.path.expanduser(keystore_path), 'r') as keystore_file:
+      reader_friendly_keystore = keystore_file.read()
+      encrypted_keystore = base64.decodebytes(reader_friendly_keystore.encode('utf-8'))
 
-    if verbose: print('Located encrypted keyring at {}:'.format(keyring_path))
-    # if verbose: print(reader_friendly_keyring)
+    if verbose: print('Located encrypted keystore at {}:'.format(keystore_path))
+    # if verbose: print(reader_friendly_keystore)
 
     cryptor = rncryptor.RNCryptor()
     decrypted = False
-    decrypted_keyring = None
+    decrypted_keystore = None
     while not decrypted:
       try:
         passphrase = getpass.getpass('Please enter the passphrase: ')
-        decrypted_keyring = cryptor.decrypt(encrypted_keyring, passphrase)
+        decrypted_keystore = cryptor.decrypt(encrypted_keystore, passphrase)
 
         # NOTE, at this point the file might not have decrypted properly, but
         # we just happen to have gotten a valid UTF-8 string.
@@ -68,36 +68,36 @@ def load():
         sys.exit(-1)
 
   except OSError as err:
-    print('keyring cannot be opened: {}'.format(err), file=sys.stderr)
+    print('keystore cannot be opened: {}'.format(err), file=sys.stderr)
     sys.exit(-1)
 
-  # attempt to uncompress the keyring
+  # attempt to uncompress the keystore
 
   # TODO: Compression results in Error -3 while decompressing data: incorrect header check
 
   # try:
-  #   stream = io.BytesIO(decrypted_keyring)
+  #   stream = io.BytesIO(decrypted_keystore)
   #   with gzip.GzipFile(fileobj=stream, mode='rb') as decompression:
-  #     decompressed_keyring = decompression.read().decode('utf-8')
+  #     decompressed_keystore = decompression.read().decode('utf-8')
   # except Exception as err:
   #   print('Passphrase is incorrect. Error: {}'.format(err))
   #   sys.exit(-1)
 
-  decompressed_keyring = decrypted_keyring
+  decompressed_keystore = decrypted_keystore
 
-  # attempt to unserialise the keyring
+  # attempt to unserialise the keystore
 
   try:
-    keyring = json.loads(decompressed_keyring)
+    keystore = json.loads(decompressed_keystore)
   except json.decoder.JSONDecodeError as err:
-    print('Either the keyring was not written properly or the passphrase is incorrect.')
+    print('Either the keystore was not written properly or the passphrase is incorrect.')
     print('Please contact the author about this as it is a serious problem.')
     sys.exit(-1)
 
   if verbose: print('Keyring decrypted successfully.')
 
   count = 0
-  for filepath, key in keyring.items():
+  for filepath, key in keystore.items():
     if os.path.isfile(os.path.expanduser(filepath)):
       confirmed = False
       overwrite = False

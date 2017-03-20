@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-  keyring - compress and encrypt your private keys
+  keystore - compress and encrypt your private keys
   author: Xavier Ho <contact@xavierho.com>
 
   License: MIT
@@ -15,12 +15,12 @@ import pathlib
 import getpass
 import rncryptor
 import traceback
-import keyringrc
+import keystorerc
 
 def save():
-  '''create a keyring, compress and encrypt to file'''
+  '''create a keystore, compress and encrypt to file'''
 
-  config = keyringrc.load()
+  config = keystorerc.load()
   if not config:
     print('No configuration found.', file=sys.stderr)
     sys.exit(-1)
@@ -29,23 +29,23 @@ def save():
   if 'verbose' in config and config['verbose']:
     verbose = True
 
-  keyring_path = None
-  if 'keyring' not in config:
-    print('.keyringrc needs to specify a keyring file path.', file=sys.stderr)
+  keystore_path = None
+  if 'keystore' not in config:
+    print('.keystorerc needs to specify a keystore file path.', file=sys.stderr)
     sys.exit(-1)
-  elif not pathlib.Path(os.path.expanduser(config['keyring'])).is_file():
-    # If keyring file does not exist already, attempt to create one
+  elif not pathlib.Path(os.path.expanduser(config['keystore'])).is_file():
+    # If keystore file does not exist already, attempt to create one
     try:
-      pathlib.Path(os.path.expanduser(config['keyring'])).touch()
+      pathlib.Path(os.path.expanduser(config['keystore'])).touch()
     except OSError as err:
-      print('keyring cannot be accessed: {}\n{}'.format(config['keyring'], err), file=sys.stderr)
+      print('keystore cannot be accessed: {}\n{}'.format(config['keystore'], err), file=sys.stderr)
       sys.exit(-1)
   else:
-    keyring_path = config['keyring']
+    keystore_path = config['keystore']
 
   # iterate through keys and add them here
 
-  keyring = {}
+  keystore = {}
   try:
     for path in config['folders']:
 
@@ -55,15 +55,15 @@ def save():
           fullpath = os.path.join(dirpath, name)
           if verbose: print('Adding {} ...'.format(fullpath))
           with open(fullpath) as keyfile:
-            keyring[fullpath] = keyfile.read()
+            keystore[fullpath] = keyfile.read()
 
-    if verbose: print('Added {} key(s) to keyring.\n'.format(len(keyring)))
+    if verbose: print('Added {} key(s) to keystore.\n'.format(len(keystore)))
 
     # prompt user for a one-time passphase for encryption
 
     do_passphrases_match = False
     passphrase = None
-    print('This passphrase is used to decrypt your keyring. Please remember it.')
+    print('This passphrase is used to decrypt your keystore. Please remember it.')
     while not do_passphrases_match:
       passphrase = getpass.getpass('Please enter a passphrase: ')
       passphrase_verify = getpass.getpass('Please verify your passphrase: ')
@@ -76,26 +76,26 @@ def save():
 
     # serialise, compress, encrypt
 
-    serial_keyring = json.dumps(keyring)
+    serial_keystore = json.dumps(keystore)
     # TODO: Compression causes loader to error out.
     # stream = io.BytesIO()
     # with gzip.GzipFile(fileobj=stream, mode='wb') as compression:
-    #   compression.write(serial_keyring.encode('utf-8'))
-    # compressed_keyring = stream.getvalue()
+    #   compression.write(serial_keystore.encode('utf-8'))
+    # compressed_keystore = stream.getvalue()
     cryptor = rncryptor.RNCryptor()
-    encrypted_keyring = cryptor.encrypt(serial_keyring, passphrase)
-    writer_friendly_keyring = base64.encodebytes(encrypted_keyring).decode('utf-8')
+    encrypted_keystore = cryptor.encrypt(serial_keystore, passphrase)
+    writer_friendly_keystore = base64.encodebytes(encrypted_keystore).decode('utf-8')
 
-    # save encrypted keyring to file
+    # save encrypted keystore to file
 
-    with open(os.path.expanduser(keyring_path), 'w') as keyring_file:
-      keyring_file.write(writer_friendly_keyring)
+    with open(os.path.expanduser(keystore_path), 'w') as keystore_file:
+      keystore_file.write(writer_friendly_keystore)
 
     if verbose: print('Keyring successfully created: ')
-    if verbose: print(writer_friendly_keyring)
+    if verbose: print(writer_friendly_keystore)
 
   except KeyError as err:
-    print('.keyringrc config is missing `folders` attribute: {}'.format(err), file=sys.stderr)
+    print('.keystorerc config is missing `folders` attribute: {}'.format(err), file=sys.stderr)
     sys.exit(-1)
   except TypeError as err:
     print('Error: {}'.format(err), file=sys.stderr)

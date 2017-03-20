@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-  keyring - compress and encrypt your private keys
+  keystore - compress and encrypt your private keys
   author: Xavier Ho <contact@xavierho.com>
 
   License: MIT
@@ -13,12 +13,12 @@ def load():
   path = None
 
   try:
-    if os.path.isfile('./.keyringrc'):
-      path = './.keyringrc'
-    elif os.path.isfile('~/.keyringrc'):
-      path = '~/.keyringrc'
+    if os.path.isfile('./.keystorerc'):
+      path = './.keystorerc'
+    elif os.path.isfile('~/.keystorerc'):
+      path = '~/.keystorerc'
     else:
-      raise OSError('The config file .keyringrc is not found in home or local working directory.')
+      raise OSError('The config file .keystorerc is not found in home or local working directory.')
 
     with open(path) as f:
       conf = json.loads(f.read())
