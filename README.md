@@ -12,7 +12,7 @@ Python 3.4+.
 Install
 =======
 
-    pip install -r requirements.txt
+    pip install keystore
 
 Setup your Keystore file in `~/.keystorerc`:
 
