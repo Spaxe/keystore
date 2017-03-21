@@ -5,8 +5,8 @@ with open('README.md') as readme:
     setup(
         name = 'keystore',
         packages = ['keystore'],
-        version = '0.1.5',
-        description = 'Command line tools to compress and encrypt your private keys',
+        version = '0.1.6',
+        description = 'Command line tools to compress and encrypt your keys',
         author = 'Xavier Ho',
         author_email = 'contact@xavierho.com',
         url = 'https://github.com/Spaxe/keystore',
