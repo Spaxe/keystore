@@ -68,22 +68,23 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
 
   keystore = {}
   try:
-    for path in config['files']:
+    for p in config['files']:
 
-      if verbose: print('Inspecting {}:'.format(path))
+      expanded_path = os.path.expanduser(p)
+      path = pathlib.Path(p)
+      if verbose: print('Inspecting {}:'.format(expanded_path))
 
-      expanded_path = os.path.expanduser(path)
-      if not os.path.exists(path):
-        print('File or folder does not exist: {}'.format(path), file=sys.stderr)
+      if not path.exists():
+        print('File or folder does not exist: {}'.format(p), file=sys.stderr)
         sys.exit(-1)
-      if os.path.isdir(expanded_path):
+      if path.is_dir():
         for dirpath, dirnames, filenames in os.walk(expanded_path):
           for name in filenames:
             fullpath = os.path.join(dirpath, name)
             if verbose: print('Adding {} ...'.format(fullpath))
             with open(fullpath) as keyfile:
               keystore[fullpath] = keyfile.read()
-      elif os.path.isfile(expanded_path):
+      elif path.is_file():
         fullpath = os.path.join(dirpath, name)
         if verbose: print('Adding {} ...'.format(fullpath))
         with open(fullpath) as keyfile:

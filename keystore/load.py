@@ -58,7 +58,7 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   else:
     keystore_path = config['keystore']
 
-  if copyto and not os.path.isdir(copyto):
+  if copyto and not pathlib.Path(copyto).is_dir():
     print('The folder to copy to does not exist: {}'.format(copyto), file=sys.stderr)
     sys.exit(-1)
 
@@ -124,21 +124,21 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
     expanded_filepath = os.path.expanduser(filepath)
     if copyto:
       expanded_filepath = os.path.join(copyto, os.path.basename(filepath))
-    if os.path.isfile(expanded_filepath):
-      confirmed = False
-      overwrite = False
-      while not confirmed:
-        overwrite = input('File {} exists. Are you sure you want to overwrite? (y)/n: '.format(expanded_filepath))
-        if overwrite == '' or overwrite == 'y' or overwrite == 'Y':
-          overwrite = True
-          confirmed = True
-        elif overwrite == 'n' or overwrite == 'N':
-          overwrite = False
-          confirmed = True
-        else:
-          print('Please enter y or n.')
-      if not overwrite:
-        continue
+
+    confirmed = False
+    overwrite = False
+    while not confirmed:
+      overwrite = input('File {} exists. Are you sure you want to overwrite? (y)/n: '.format(expanded_filepath))
+      if overwrite == '' or overwrite == 'y' or overwrite == 'Y':
+        overwrite = True
+        confirmed = True
+      elif overwrite == 'n' or overwrite == 'N':
+        overwrite = False
+        confirmed = True
+      else:
+        print('Please enter y or n.')
+    if not overwrite:
+      continue
 
     # key ready to be created
     if verbose: print('Writing key to {} ...'.format(expanded_filepath))
