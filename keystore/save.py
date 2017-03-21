@@ -86,7 +86,7 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
               b64_bytes = base64.encodebytes(keyfile.read()).decode('utf-8')
               keystore[fullpath] = b64_bytes
       elif path.is_file():
-        fullpath = os.path.join(dirpath, name)
+        fullpath = expanded_path
         if verbose: print('Adding {} ...'.format(fullpath))
         with open(fullpath, 'rb') as keyfile:
           b64_bytes = base64.encodebytes(keyfile.read()).decode('utf-8')
