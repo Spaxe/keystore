@@ -24,6 +24,7 @@ Setup your Keystore file in `~/.keystorerc`:
       "keystore": "~/Dropbox/Keystore",
       "files": [
         "~/.ssh",
+        "~/.gnupg"
       ],
       "verbose": true
     }
