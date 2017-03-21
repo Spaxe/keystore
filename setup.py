@@ -5,7 +5,7 @@ with open('README.md') as readme:
     setup(
         name = 'keystore',
         packages = ['keystore'],
-        version = '0.1.7',
+        version = '0.1.8',
         description = 'Command line tools to compress and encrypt your keys',
         author = 'Xavier Ho',
         author_email = 'contact@xavierho.com',

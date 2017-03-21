@@ -18,11 +18,15 @@ Before using it for the first time, you will need to setup a `~/.keystorerc` in
 your home directory.
 
     {
-      "keystore": "~/Dropbox/Keystore",
+      "keystore": "~/Dropbox/keystore",
       "files": [
         "~/.ssh",
-        "~/.gnupg",
-        "~/.pypirc"
+        "~/.gnupg/gpg-agent.conf",
+        "~/.gnupg/gpg.conf",
+        "~/.gnupg/private-keys-v1.d",
+        "~/.gnupg/pubring.gpg",
+        "~/.gnupg/secring.gpg",
+        "~/.gnupg/trustdb.gpg",
       ],
       "verbose": true
     }
