@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name = 'keystore',
     packages = ['keystore'],
-    version = '0.1.1',
+    version = '0.1.2',
     description = 'Compress and encrypt your private keys',
     author = 'Xavier Ho',
     author_email = 'contact@xavierho.com',
