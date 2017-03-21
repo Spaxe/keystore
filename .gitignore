@@ -4,3 +4,5 @@ MANIFEST
 dist
 test/compare
 testkeystore
+build/
+keystore.egg-info/
