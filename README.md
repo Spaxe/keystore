@@ -2,11 +2,10 @@ Keystore - keeps your keys in one place.
 ----------------------------------------
 
 THIS IS AN EXPERIMENT. DO NOT USE IN PRODUCTION.
-----------------------------------------
+================================================
 
 Prerequisites
 =============
-
 Python 3.4+.
 
 Install
