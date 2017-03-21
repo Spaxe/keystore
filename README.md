@@ -27,6 +27,7 @@ your home directory.
       "verbose": true
     }
 
+
 Example usage
 =============
 
