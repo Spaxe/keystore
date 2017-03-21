@@ -41,7 +41,7 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   elif keystore:
     config = {
       'keystore': keystore,
-      'folders': []
+      'files': []
     }
 
   if 'verbose' in config and config['verbose']:

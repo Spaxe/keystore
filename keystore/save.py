@@ -4,7 +4,7 @@
 
 Usage:
   save.py [options] --keystorerc <keystorerc>
-  save.py [options] <keystore> <folders>...
+  save.py [options] <keystore> <files>...
   save.py (-h | --help)
   save.py --version
 
@@ -29,7 +29,7 @@ from docopt import docopt
 
 from keystore import config_reader
 
-def save(keystorerc=None, keystore=None, folders=[], verbose=False):
+def save(keystorerc=None, keystore=None, files=[], verbose=False):
   '''create a keystore, compress and encrypt to file'''
 
   config = None
@@ -38,10 +38,10 @@ def save(keystorerc=None, keystore=None, folders=[], verbose=False):
     if not config:
       print('No configuration found.', file=sys.stderr)
       sys.exit(-1)
-  elif keystore and len(folders) > 0:
+  elif keystore and len(files) > 0:
     config = {
       'keystore': keystore,
-      'folders': folders
+      'files': files
     }
 
   if 'verbose' in config and config['verbose']:
@@ -53,10 +53,10 @@ def save(keystorerc=None, keystore=None, folders=[], verbose=False):
     sys.exit(-1)
 
   keystore_path = os.path.expanduser(config['keystore'])
-  if pathlib.Path(keystore_path).is_dir():
+  if os.path.isdir(keystore_path):
     print('keystore cannot be a folder: {}'.format(config['keystore']), file=sys.stderr)
     sys.exit(-1)
-  elif not pathlib.Path(keystore_path).is_file():
+  elif not os.path.isfile(keystore_path):
     # If keystore file does not exist already, attempt to create one
     try:
       pathlib.Path(keystore_path).touch()
@@ -68,7 +68,7 @@ def save(keystorerc=None, keystore=None, folders=[], verbose=False):
 
   keystore = {}
   try:
-    for path in config['folders']:
+    for path in config['files']:
 
       if verbose: print('Inspecting {}:'.format(path))
 
@@ -76,12 +76,18 @@ def save(keystorerc=None, keystore=None, folders=[], verbose=False):
       if not os.path.exists(path):
         print('File or folder does not exist: {}'.format(path), file=sys.stderr)
         sys.exit(-1)
-      for dirpath, dirnames, filenames in os.walk(expanded_path):
-        for name in filenames:
-          fullpath = os.path.join(dirpath, name)
-          if verbose: print('Adding {} ...'.format(fullpath))
-          with open(fullpath) as keyfile:
-            keystore[fullpath] = keyfile.read()
+      if os.path.isdir(expanded_path):
+        for dirpath, dirnames, filenames in os.walk(expanded_path):
+          for name in filenames:
+            fullpath = os.path.join(dirpath, name)
+            if verbose: print('Adding {} ...'.format(fullpath))
+            with open(fullpath) as keyfile:
+              keystore[fullpath] = keyfile.read()
+      elif os.path.isfile(expanded_path):
+        fullpath = os.path.join(dirpath, name)
+        if verbose: print('Adding {} ...'.format(fullpath))
+        with open(fullpath) as keyfile:
+          keystore[fullpath] = keyfile.read()
 
     if verbose: print('Added {} key(s) to keystore.\n'.format(len(keystore)))
 
@@ -123,7 +129,7 @@ def save(keystorerc=None, keystore=None, folders=[], verbose=False):
     if verbose: print(writer_friendly_keystore)
 
   except KeyError as err:
-    print('.keystorerc config is missing `folders` attribute: {}'.format(err), file=sys.stderr)
+    print('.keystorerc config is missing `files` attribute: {}'.format(err), file=sys.stderr)
     sys.exit(-1)
   except TypeError as err:
     print('Error: {}'.format(err), file=sys.stderr)
@@ -144,9 +150,9 @@ if __name__ == '__main__':
       keystorerc=arguments['--keystorerc'],
       verbose=arguments['--verbose']
     )
-  elif arguments['<keystore>'] and arguments['<folders>']:
+  elif arguments['<keystore>'] and arguments['<files>']:
     save(
       keystore=arguments['<keystore>'],
-      folders=arguments['<folders>'],
+      files=arguments['<files>'],
       verbose=arguments['--verbose']
     )

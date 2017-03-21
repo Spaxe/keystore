@@ -16,9 +16,13 @@ Install
 
 Setup your Keystore file in `~/.keystorerc`:
 
+ * `keystore`: Where the encrypted keys are stored
+ * `files`: List of folders and files to collect
+ * `verbose`: Print out extra information
+
     {
       "keystore": "~/Dropbox/Keystore",
-      "folders": [
+      "files": [
         "~/.ssh",
       ],
       "verbose": true

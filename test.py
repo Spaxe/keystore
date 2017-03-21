@@ -20,14 +20,20 @@ def test_keystore():
   print('Comparing before and after...')
 
   cf = config_reader.read('.keystorerc')
-  for f in cf['folders']:
-    for dirpath, dirnames, filenames in os.walk(os.path.expanduser(f)):
-      original_dir = dirpath
-      for filename in filenames:
-        original_path = os.path.join(original_dir, os.path.basename(filename))
-        copied_path = os.path.join('./test/compare', os.path.basename(filename))
-        with open(original_path, 'r') as original, open(copied_path, 'r') as copy:
-          assert(original.read() == copy.read())
+  for f in cf['files']:
+    if os.path.isdir(f):
+      for dirpath, dirnames, filenames in os.walk(os.path.expanduser(f)):
+        original_dir = dirpath
+        for filename in filenames:
+          original_path = os.path.join(original_dir, os.path.basename(filename))
+          copied_path = os.path.join('./test/compare', os.path.basename(filename))
+          with open(original_path, 'r') as original, open(copied_path, 'r') as copy:
+            assert(original.read() == copy.read())
+    elif os.path.isfile(f):
+      original_path = os.path.join(original_dir, os.path.basename(f))
+      copied_path = os.path.join('./test/compare', os.path.basename(f))
+      with open(original_path, 'r') as original, open(copied_path, 'r') as copy:
+        assert(original.read() == copy.read())
 
   print('Test successful.')
 
