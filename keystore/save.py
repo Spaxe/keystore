@@ -71,11 +71,11 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
     for p in config['files']:
 
       expanded_path = os.path.expanduser(p)
-      path = pathlib.Path(p)
+      path = pathlib.Path(expanded_path)
       if verbose: print('Inspecting {}:'.format(expanded_path))
 
       if not path.exists():
-        print('File or folder does not exist: {}'.format(p), file=sys.stderr)
+        print('Error: File or folder does not exist: {}'.format(p), file=sys.stderr)
         sys.exit(-1)
       if path.is_dir():
         for dirpath, dirnames, filenames in os.walk(expanded_path):

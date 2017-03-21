@@ -58,7 +58,7 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   else:
     keystore_path = config['keystore']
 
-  if copyto and not pathlib.Path(copyto).is_dir():
+  if copyto and not pathlib.Path(os.path.expanduser(copyto)).is_dir():
     print('The folder to copy to does not exist: {}'.format(copyto), file=sys.stderr)
     sys.exit(-1)
 
