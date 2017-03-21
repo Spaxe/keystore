@@ -6,4 +6,4 @@ test/compare
 testkeystore
 build/
 keystore.egg-info/
-README.html*
+index.html*

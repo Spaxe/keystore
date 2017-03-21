@@ -10,16 +10,12 @@ Python 3.4+.
 
 Install
 =======
-
-1. Install from `pip`:
+You can install straight from `pip`.
 
     pip install keystore
 
-2. Setup your Keystore file in `~/.keystorerc`:
-
- * `keystore`: Where the encrypted keys are stored
- * `files`: List of folders and files to collect
- * `verbose`: Print out extra information
+Before using it for the first time, you will need to setup a `~/.keystorerc` in
+your home directory.
 
     {
       "keystore": "~/Dropbox/Keystore",
