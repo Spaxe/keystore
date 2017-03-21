@@ -143,8 +143,9 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
     # key ready to be created
     if verbose: print('Writing key to {} ...'.format(expanded_filepath))
     try:
-      with open(expanded_filepath, 'w') as keyfile:
-        keyfile.write(key)
+      with open(expanded_filepath, 'wb') as keyfile:
+        b64_decoded = base64.decodebytes(key.encode('utf-8'))
+        keyfile.write(b64_decoded)
       count += 1
     except OSError as err:
       print('File system threw an error: {}'.format(err), file=sys.stderr)

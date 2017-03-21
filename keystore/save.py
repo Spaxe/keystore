@@ -82,13 +82,15 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
           for name in filenames:
             fullpath = os.path.join(dirpath, name)
             if verbose: print('Adding {} ...'.format(fullpath))
-            with open(fullpath) as keyfile:
-              keystore[fullpath] = keyfile.read()
+            with open(fullpath, 'rb') as keyfile:
+              b64_bytes = base64.encodebytes(keyfile.read()).decode('utf-8')
+              keystore[fullpath] = b64_bytes
       elif path.is_file():
         fullpath = os.path.join(dirpath, name)
         if verbose: print('Adding {} ...'.format(fullpath))
-        with open(fullpath) as keyfile:
-          keystore[fullpath] = keyfile.read()
+        with open(fullpath, 'rb') as keyfile:
+          b64_bytes = base64.encodebytes(keyfile.read()).decode('utf-8')
+          keystore[fullpath] = b64_bytes
 
     if verbose: print('Added {} key(s) to keystore.\n'.format(len(keystore)))
 
@@ -126,7 +128,7 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
     with open(keystore_path, 'w') as keystore_file:
       keystore_file.write(writer_friendly_keystore)
 
-    if verbose: print('Keyring successfully created: ')
+    if verbose: print('Keystore successfully created: ')
     if verbose: print(writer_friendly_keystore)
 
   except KeyError as err:

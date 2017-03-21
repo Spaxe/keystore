@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import base64
 
 from keystore import save, load, config_reader
 
@@ -27,12 +28,13 @@ def test_keystore():
         for filename in filenames:
           original_path = os.path.join(original_dir, os.path.basename(filename))
           copied_path = os.path.join('./test/compare', os.path.basename(filename))
-          with open(original_path, 'r') as original, open(copied_path, 'r') as copy:
+          with open(original_path, 'rb') as original, open(copied_path, 'rb') as copy:
             assert(original.read() == copy.read())
+
     elif os.path.isfile(f):
       original_path = os.path.join(original_dir, os.path.basename(f))
       copied_path = os.path.join('./test/compare', os.path.basename(f))
-      with open(original_path, 'r') as original, open(copied_path, 'r') as copy:
+      with open(original_path, 'rb') as original, open(copied_path, 'rb') as copy:
         assert(original.read() == copy.read())
 
   print('Test successful.')
