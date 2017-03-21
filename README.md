@@ -11,9 +11,11 @@ Python 3.4+.
 Install
 =======
 
+1. Install from `pip`:
+
     pip install keystore
 
-Setup your Keystore file in `~/.keystorerc`:
+2. Setup your Keystore file in `~/.keystorerc`:
 
  * `keystore`: Where the encrypted keys are stored
  * `files`: List of folders and files to collect
@@ -23,7 +25,8 @@ Setup your Keystore file in `~/.keystorerc`:
       "keystore": "~/Dropbox/Keystore",
       "files": [
         "~/.ssh",
-        "~/.gnupg"
+        "~/.gnupg",
+        "~/.pypirc"
       ],
       "verbose": true
     }
