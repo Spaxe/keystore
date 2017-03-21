@@ -15,12 +15,12 @@ def read(filepath):
   try:
     if os.path.isfile(os.path.expanduser(filepath)):
       path = os.path.expanduser(filepath)
-    if os.path.isfile('./.keystorerc'):
+    elif os.path.isfile('./.keystorerc'):
       path = './.keystorerc'
-    elif os.path.isfile('~/.keystorerc'):
-      path = '~/.keystorerc'
     else:
-      raise OSError('The config file .keystorerc is not found in home or local working directory.')
+      raise OSError('''The config file .keystorerc is not found in home or local working directory.
+
+Please refer to https://pypi.python.org/pypi/keystore for setting up a .keystorerc file.''')
 
     with open(path) as f:
       conf = json.loads(f.read())
