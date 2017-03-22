@@ -127,6 +127,10 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
 
     confirmed = False
     overwrite = False
+    if not pathlib.Path(expanded_filepath).exists():
+      confirmed = True
+      overwrite = True
+
     while not confirmed:
       overwrite = input('File {} exists. Are you sure you want to overwrite? (y)/n: '.format(expanded_filepath))
       if overwrite == '' or overwrite == 'y' or overwrite == 'Y':
@@ -154,8 +158,7 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   if verbose: print('Keyring loaded. Restored {} keys.'.format(count))
 
 if __name__ == '__main__':
-  arguments = docopt(__doc__, version='0.1.0')
-  print(arguments)
+  arguments = docopt(__doc__, version='0.2.0')
 
   if arguments['<keystore>']:
     load(

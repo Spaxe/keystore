@@ -146,7 +146,7 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
     sys.exit(-1)
 
 if __name__ == '__main__':
-  arguments = docopt(__doc__, version='0.1.0')
+  arguments = docopt(__doc__, version='0.2.0')
 
   if arguments['--keystorerc']:
     save(
