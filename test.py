@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import base64
-
 from keystore import save, load, config_reader
 
 def test_keystore():
