@@ -127,7 +127,7 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
       keystore_file.write(encrypted_keystore)
 
     if verbose: print('Keystore successfully created: ')
-    if verbose: print(encrypted_keystore)
+    # if verbose: print(encrypted_keystore)
 
   except KeyError as err:
     print('.keystorerc config is missing `files` attribute: {}'.format(err), file=sys.stderr)
