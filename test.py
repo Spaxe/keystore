@@ -38,5 +38,6 @@ def test_keystore():
 
   print('Test successful.')
 
+
 if __name__ == '__main__':
   test_keystore()
