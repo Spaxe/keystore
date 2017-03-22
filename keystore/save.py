@@ -27,7 +27,7 @@ import traceback
 import rncryptor
 from docopt import docopt
 
-from keystore import config_reader
+from keystore import config_reader, __version__
 
 def save(keystorerc=None, keystore=None, files=[], verbose=False):
   '''create a keystore, compress and encrypt to file'''
@@ -146,7 +146,7 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
     sys.exit(-1)
 
 if __name__ == '__main__':
-  arguments = docopt(__doc__, version='0.2.0')
+  arguments = docopt(__doc__, version=__version__)
 
   if arguments['--keystorerc']:
     save(

@@ -27,7 +27,7 @@ import getpass
 import rncryptor
 from docopt import docopt
 
-from keystore import config_reader
+from keystore import config_reader, __version__
 
 def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   '''decrypt and write out a keystore'''
@@ -158,7 +158,7 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
   if verbose: print('Keyring loaded. Restored {} keys.'.format(count))
 
 if __name__ == '__main__':
-  arguments = docopt(__doc__, version='0.2.0')
+  arguments = docopt(__doc__, version=__version__)
 
   if arguments['<keystore>']:
     load(

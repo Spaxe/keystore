@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
+from keystore import __version__
 from setuptools import setup
 with open('README.md') as readme:
     setup(
         name = 'keystore',
         packages = ['keystore'],
-        version = '0.2.0',
+        version = __version__,
         install_requires = [
             'rncryptor==3.2.0',
             'docopt==0.6.2'
