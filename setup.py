@@ -5,7 +5,11 @@ with open('README.md') as readme:
     setup(
         name = 'keystore',
         packages = ['keystore'],
-        version = '0.1.8',
+        version = '0.1.9',
+        install_requires = [
+            'rncryptor==3.2.0',
+            'docopt==0.6.2'
+        ],
         description = 'Command line tools to compress and encrypt your keys',
         author = 'Xavier Ho',
         author_email = 'contact@xavierho.com',
