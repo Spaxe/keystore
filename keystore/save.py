@@ -24,7 +24,7 @@ import pathlib
 import getpass
 import traceback
 
-import rncryptor
+import simplecrypt
 from docopt import docopt
 
 from keystore import config_reader, __version__
@@ -112,24 +112,22 @@ def save(keystorerc=None, keystore=None, files=[], verbose=False):
     # serialise, compress, encrypt
 
     serial_keystore = json.dumps(keystore)
-    # TODO: Compression causes loader to error out.
-    # stream = io.BytesIO()
-    # with gzip.GzipFile(fileobj=stream, mode='wb') as compression:
-    #   compression.write(serial_keystore.encode('utf-8'))
-    # compressed_keystore = stream.getvalue()
-    cryptor = rncryptor.RNCryptor()
-    encrypted_keystore = cryptor.encrypt(serial_keystore, passphrase)
-    writer_friendly_keystore = base64.encodebytes(encrypted_keystore).decode('utf-8')
+    compressed_keystore = gzip.compress(serial_keystore.encode('utf-8'))
+    try:
+      encrypted_keystore = simplecrypt.encrypt(passphrase, compressed_keystore)
+    except simplecrypt.EncryptionException as err:
+      print('You managed to bump into a very, very rare issue with AES.\nPlease contact the author. {}'.format(err), file=sys.stder)
+      sys.exit(-1)
 
     # save encrypted keystore to file
     keystore_path = os.path.expanduser(keystore_path)
     if verbose: print('Writing to keystore file {}'.format(keystore_path))
 
-    with open(keystore_path, 'w') as keystore_file:
-      keystore_file.write(writer_friendly_keystore)
+    with open(keystore_path, 'wb') as keystore_file:
+      keystore_file.write(encrypted_keystore)
 
     if verbose: print('Keystore successfully created: ')
-    if verbose: print(writer_friendly_keystore)
+    if verbose: print(encrypted_keystore)
 
   except KeyError as err:
     print('.keystorerc config is missing `files` attribute: {}'.format(err), file=sys.stderr)

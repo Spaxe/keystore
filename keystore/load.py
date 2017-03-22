@@ -24,7 +24,7 @@ import base64
 import pathlib
 import getpass
 
-import rncryptor
+import simplecrypt
 from docopt import docopt
 
 from keystore import config_reader, __version__
@@ -66,25 +66,19 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
 
   encrypted_keystore = None
   try:
-    with open(os.path.expanduser(keystore_path), 'r') as keystore_file:
-      reader_friendly_keystore = keystore_file.read()
-      encrypted_keystore = base64.decodebytes(reader_friendly_keystore.encode('utf-8'))
+    with open(os.path.expanduser(keystore_path), 'rb') as keystore_file:
+      encrypted_keystore = keystore_file.read()
 
     if verbose: print('Located encrypted keystore at {}.'.format(keystore_path))
-    # if verbose: print(reader_friendly_keystore)
 
-    cryptor = rncryptor.RNCryptor()
     decrypted = False
     decrypted_keystore = None
     while not decrypted:
       try:
         passphrase = getpass.getpass('Please enter the passphrase: ')
-        decrypted_keystore = cryptor.decrypt(encrypted_keystore, passphrase)
-
-        # NOTE, at this point the file might not have decrypted properly, but
-        # we just happen to have gotten a valid UTF-8 string.
+        decrypted_keystore = simplecrypt.decrypt(passphrase, encrypted_keystore)
         decrypted = True
-      except rncryptor.DecryptionError as err:
+      except simplecrypt.DecryptionException as err:
         print('Invalid passphrase. Please try again.')
       except UnicodeDecodeError as err:
         print('Keyring cannot be decrypted.\nError: {}'.format(err), file=sys.stderr)
@@ -96,28 +90,17 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
 
   # attempt to uncompress the keystore
 
-  # TODO: Compression results in Error -3 while decompressing data: incorrect header check
-
-  # try:
-  #   stream = io.BytesIO(decrypted_keystore)
-  #   with gzip.GzipFile(fileobj=stream, mode='rb') as decompression:
-  #     decompressed_keystore = decompression.read().decode('utf-8')
-  # except Exception as err:
-  #   print('Passphrase is incorrect. Error: {}'.format(err))
-  #   sys.exit(-1)
-
-  decompressed_keystore = decrypted_keystore
+  decompressed_keystore = gzip.decompress(decrypted_keystore)
 
   # attempt to unserialise the keystore
 
   try:
     keystore = json.loads(decompressed_keystore)
   except json.decoder.JSONDecodeError as err:
-    print('Either the keystore was not written properly or the passphrase is incorrect.')
-    print('Please contact the author about this as it is a serious problem.')
+    print('Please contact the author about this as this is a serious problem. {}'.format(err), file=sys.stderr)
     sys.exit(-1)
 
-  if verbose: print('Keyring decrypted successfully.')
+  if verbose: print('Keystore decrypted successfully.')
 
   count = 0
   for filepath, key in keystore.items():
@@ -155,7 +138,7 @@ def load(keystorerc=None, keystore=None, copyto=None, verbose=False):
       print('File system threw an error: {}'.format(err), file=sys.stderr)
       print('Skipping {}'.format(expanded_filepath))
 
-  if verbose: print('Keyring loaded. Restored {} keys.'.format(count))
+  if verbose: print('Keystore restored {} keys.'.format(count))
 
 if __name__ == '__main__':
   arguments = docopt(__doc__, version=__version__)
