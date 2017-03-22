@@ -68,9 +68,22 @@ Example usage
     Writing key to /Users/spaxe/.ssh/known_hosts ...
     Keyring loaded. Restored 3 keys.
 
+**Loading keys to the same directory (useful for a new machine):**
+
+    $ mkdir keys
+    $ keystore-load --copy-to keys
+
+    Located encrypted keystore at ~/Dropbox/keystore:
+    Please enter the passphrase:
+    Keyring decrypted successfully.
+    Writing key to /Users/spaxe/keys/id_rsa ...
+    Writing key to /Users/spaxe/keys/id_rsa.pub ...
+    Writing key to /Users/spaxe/keys/known_hosts ...
+    Keyring loaded. Restored 3 keys.
+
 **Running tests:**
 
-    python test.py
+    python3 test.py
 
 License
 =======
