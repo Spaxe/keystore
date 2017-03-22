@@ -8,7 +8,7 @@ with open('README.md') as readme:
         packages = ['keystore'],
         version = __version__,
         install_requires = [
-            'rncryptor==3.2.0',
+            'simple-crypt==4.1.7',
             'docopt==0.6.2'
         ],
         description = 'Command line tools to compress and encrypt your keys',

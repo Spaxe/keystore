@@ -1,15 +1,22 @@
 Keystore - keeps your keys in one place.
-----------------------------------------
+========================================
 
-THIS IS AN EXPERIMENT. DO NOT USE IN PRODUCTION.
-================================================
+THIS IS AN EXPERIMENT [DO NOT USE IN PRODUCTION]
+------------------------------------------------
+Encrypt your keys before syncing them to a local backup, or "the cloud".
+
+Download it later and decrypt it yourself.
+
+    $ keystore-save
+    $ mkdir keys
+    $ keystore-load --copy-to keys
 
 Prerequisites
-=============
+-------------
 Python 3.4+.
 
 Install
-=======
+-------
 You can install straight from `pip`.
 
     pip install keystore
@@ -31,9 +38,8 @@ your home directory.
       "verbose": true
     }
 
-
 Example usage
-=============
+-------------
 
 **Saving keys:**
 
@@ -85,8 +91,13 @@ Example usage
 
     python3 test.py
 
+Known Security Issues
+---------------------
+This library uses `simple-crypt`, which was last updated in 2015.
+[You can read up about warnings for security concerns here](https://github.com/andrewcooke/simple-crypt#warnings).
+
 License
-=======
+-------
 © Xavier Ho <contact@xavierho.com>
 
 License under MIT License.
