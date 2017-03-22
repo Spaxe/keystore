@@ -2,15 +2,12 @@
 
 from keystore import __version__
 from setuptools import setup
-with open('README.md') as readme:
+with open('README.md') as readme, open('requirements.txt') as requirements:
     setup(
         name = 'keystore',
         packages = ['keystore'],
         version = __version__,
-        install_requires = [
-            'simple-crypt==4.1.7',
-            'docopt==0.6.2'
-        ],
+        install_requires = requirements.read().split(),
         description = 'Command line tools to compress and encrypt your keys',
         author = 'Xavier Ho',
         author_email = 'contact@xavierho.com',
